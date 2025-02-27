@@ -48,18 +48,19 @@ const Login = () => {
         animate={error ? { x: [0, -10, 10, -10, 10, 0] } : { x: 0 }}
         transition={{ type: "spring", stiffness: 100 }}
       >
+        <img className="login-icon" src="login.jpg" />
         <h2>Login</h2>
         <input
           type="email"
           name="email"
-          placeholder="Email"
+          placeholder="Enter your email"
           value={loginData.email}
           onChange={handleChange}
         />
         <input
           type="password"
           name="password"
-          placeholder="Password"
+          placeholder="Enter the password"
           value={loginData.password}
           onChange={handleChange}
         />

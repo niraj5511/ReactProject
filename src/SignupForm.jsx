@@ -8,9 +8,9 @@ const SignupForm = () => {
     email: "",
     password: "",
     confirmPassword: "",
-    age: "",
+    // age: "",
     gender: "",
-    address: "",
+    // address: "",
   });
   const [errors, setErrors] = useState({});
 
@@ -50,14 +50,14 @@ const SignupForm = () => {
       isValid = false;
     }
 
-    // Validate age
-    if (!formData.age) {
-      newErrors.age = "Age is required.";
-      isValid = false;
-    } else if (parseInt(formData.age, 10) <= 18) {
-      newErrors.age = "You must be over 18 years old.";
-      isValid = false;
-    }
+    // // Validate age
+    // if (!formData.age) {
+    //   newErrors.age = "Age is required.";
+    //   isValid = false;
+    // } else if (parseInt(formData.age, 10) <= 18) {
+    //   newErrors.age = "You must be over 18 years old.";
+    //   isValid = false;
+    // }
 
     // Validate gender
     if (!formData.gender) {
@@ -65,11 +65,11 @@ const SignupForm = () => {
       isValid = false;
     }
 
-    // Validate address
-    if (!formData.address) {
-      newErrors.address = "Address is required.";
-      isValid = false;
-    }
+    // // Validate address
+    // if (!formData.address) {
+    //   newErrors.address = "Address is required.";
+    //   isValid = false;
+    // }
 
     setErrors(newErrors);
     return isValid;
@@ -88,6 +88,7 @@ const SignupForm = () => {
   return (
     <div className="signup-container">
       <form className="signup-form" onSubmit={handleSubmit}>
+      <img className="signup-icon" src="signup.png" />
         <h2>Signup</h2>
         <input
           type="email"
@@ -118,14 +119,14 @@ const SignupForm = () => {
           <span className="error">{errors.confirmPassword}</span>
         )}
 
-        <input
+        {/* <input
           type="number"
           name="age"
           placeholder="Age"
           value={formData.age}
           onChange={handleChange}
         />
-        {errors.age && <span className="error">{errors.age}</span>}
+        {errors.age && <span className="error">{errors.age}</span>} */}
 
         <select name="gender" value={formData.gender} onChange={handleChange}>
           <option value="" disabled>
@@ -137,13 +138,13 @@ const SignupForm = () => {
         </select>
         {errors.gender && <span className="error">{errors.gender}</span>}
 
-        <textarea
+        {/* <textarea
           name="address"
           placeholder="Address"
           value={formData.address}
           onChange={handleChange}
         ></textarea>
-        {errors.address && <span className="error">{errors.address}</span>}
+        {errors.address && <span className="error">{errors.address}</span>} */}
 
         <button type="submit">Signup</button>
       </form>
