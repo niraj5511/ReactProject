@@ -1,50 +1,508 @@
+/* ============================================================
+   Login — modern glassmorphism on an animated aurora backdrop
+   ============================================================ */
+
 .login-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 50vh;
-    background-color: #f5f5f5;
+  --accent: #818cf8;
+  --accent-2: #22d3ee;
+  --text: #eef2ff;
+  --muted: #a9b4d0;
+  --danger: #ff6b81;
+  --ok: #34d399;
+  --stroke: rgba(255, 255, 255, 0.14);
+  --glass: rgba(255, 255, 255, 0.07);
+
+  position: fixed;
+  inset: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: grid;
+  place-items: center;
+  padding: clamp(18px, 5vw, 56px);
+  isolation: isolate;
+  font-family: Inter, "Segoe UI", system-ui, -apple-system, sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(1100px 620px at 12% -12%, rgba(99, 102, 241, 0.45), transparent 62%),
+    radial-gradient(900px 520px at 108% 14%, rgba(34, 211, 238, 0.26), transparent 58%),
+    radial-gradient(820px 720px at 50% 122%, rgba(168, 85, 247, 0.38), transparent 64%),
+    radial-gradient(700px 520px at -8% 108%, rgba(56, 189, 248, 0.2), transparent 60%),
+    #080c1a;
+}
+
+/* soft drifting light blobs */
+.login-container::before,
+.login-container::after {
+  content: "";
+  position: absolute;
+  z-index: -2;
+  width: 42vmax;
+  height: 42vmax;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.login-container::before {
+  top: -14vmax;
+  left: -10vmax;
+  background: radial-gradient(circle at 30% 30%, #4f46e5, transparent 70%);
+  animation: login-drift-a 18s ease-in-out infinite;
+}
+
+.login-container::after {
+  right: -12vmax;
+  bottom: -16vmax;
+  background: radial-gradient(circle at 70% 70%, #0ea5e9, transparent 70%);
+  animation: login-drift-b 22s ease-in-out infinite;
+}
+
+@keyframes login-drift-a {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
   }
-  .login-icon{
-    width: 60px;
-    border-radius: 50px;
-    align-self: center;
-    margin-top: 30px;
+  50% {
+    transform: translate3d(6vmax, 5vmax, 0) scale(1.12);
   }
+}
+
+@keyframes login-drift-b {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1.08);
+  }
+  50% {
+    transform: translate3d(-5vmax, -6vmax, 0) scale(1);
+  }
+}
+
+/* ---------------------------- card ---------------------------- */
+
+.login-form {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 424px;
+  box-sizing: border-box;
+  padding: 38px 34px 30px;
+  border-radius: 26px;
+  border: 1px solid var(--stroke);
+  background: linear-gradient(165deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.055));
+  backdrop-filter: blur(26px) saturate(150%);
+  -webkit-backdrop-filter: blur(26px) saturate(150%);
+  box-shadow:
+    0 34px 70px -24px rgba(2, 6, 23, 0.85),
+    0 2px 0 rgba(255, 255, 255, 0.06) inset,
+    0 -30px 60px -40px rgba(129, 140, 248, 0.5) inset;
+}
+
+/* gradient hairline along the top edge */
+.login-form::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 22%;
+  right: 22%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.75), transparent);
+}
+
+/* ---------------------------- brand ---------------------------- */
+
+.login-brand {
+  align-self: center;
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 74px;
+  height: 74px;
+  border-radius: 50%;
+  margin-bottom: 18px;
+  background: conic-gradient(from 140deg, var(--accent), var(--accent-2), #a855f7, var(--accent));
+  box-shadow: 0 14px 34px -10px rgba(129, 140, 248, 0.75);
+}
+
+.login-brand::after {
+  content: "";
+  position: absolute;
+  inset: -7px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.login-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #0b1020;
+}
+
+.login-form h2 {
+  margin: 0;
+  text-align: center;
+  font-size: 27px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.login-subtitle {
+  margin: 8px 0 26px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+/* ---------------------------- fields ---------------------------- */
+
+.login-field {
+  position: relative;
+  margin-bottom: 14px;
+}
+
+.login-field input {
+  width: 100%;
+  height: 58px;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 23px 16px 7px 47px;
+  font: inherit;
+  font-size: 15px;
+  color: var(--text);
+  border: 1px solid var(--stroke);
+  border-radius: 15px;
+  background: var(--glass);
+  outline: none;
+  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+}
+
+.login-field.has-toggle input {
+  padding-right: 52px;
+}
+
+.login-field input:hover {
+  border-color: rgba(255, 255, 255, 0.24);
+}
+
+.login-field input:focus {
+  border-color: rgba(129, 140, 248, 0.75);
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 0 4px rgba(129, 140, 248, 0.18);
+}
+
+.login-field label {
+  position: absolute;
+  left: 47px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 15px;
+  color: var(--muted);
+  pointer-events: none;
+  transition: transform 0.18s ease, font-size 0.18s ease, color 0.18s ease, letter-spacing 0.18s ease;
+}
+
+.login-field input:focus + label,
+.login-field input:not(:placeholder-shown) + label {
+  transform: translateY(-25px) scale(1);
+  font-size: 10.5px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.login-field .field-icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  pointer-events: none;
+  transition: color 0.2s;
+}
+
+.login-field input:focus ~ .field-icon {
+  color: var(--accent);
+}
+
+.login-field.invalid input {
+  border-color: rgba(255, 107, 129, 0.7);
+  box-shadow: 0 0 0 4px rgba(255, 107, 129, 0.14);
+}
+
+/* keep Chrome autofill from painting the field white */
+.login-field input:-webkit-autofill,
+.login-field input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--text);
+  caret-color: var(--text);
+  -webkit-box-shadow: 0 0 0 1000px rgba(30, 41, 82, 0.92) inset;
+  transition: background-color 9999s ease-out;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border: none;
+  border-radius: 11px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: color 0.2s, background 0.2s;
+}
+
+.password-toggle:hover {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.09);
+  border-color: transparent;
+}
+
+.password-toggle:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ---------------------------- meta row ---------------------------- */
+
+.login-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  margin: 4px 0 20px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.login-remember {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.login-remember input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.login-remember .box {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 6px;
+  border: 1px solid var(--stroke);
+  background: var(--glass);
+  color: #fff;
+  transition: background 0.2s, border-color 0.2s, transform 0.15s;
+}
+
+.login-remember .box svg {
+  opacity: 0;
+  transform: scale(0.5);
+  transition: opacity 0.15s, transform 0.15s;
+}
+
+.login-remember input:checked + .box {
+  background: linear-gradient(140deg, var(--accent), #a855f7);
+  border-color: transparent;
+}
+
+.login-remember input:checked + .box svg {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.login-remember input:focus-visible + .box {
+  box-shadow: 0 0 0 4px rgba(129, 140, 248, 0.22);
+}
+
+.caps-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #fbbf24;
+}
+
+/* ---------------------------- error ---------------------------- */
+
+/* scoped to the card so the global `.error` rule in SignupForm.css can't win */
+.login-form .error {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0 0 14px;
+  padding: 11px 13px;
+  font-size: 13.5px;
+  font-weight: 500;
+  border-radius: 13px;
+  color: #ffdbe1;
+  border: 1px solid rgba(255, 107, 129, 0.38);
+  background: rgba(255, 107, 129, 0.13);
+}
+
+.login-form .error svg {
+  flex: none;
+  color: var(--danger);
+}
+
+/* ---------------------------- submit ---------------------------- */
+
+.login-form button[type="submit"] {
+  position: relative;
+  overflow: hidden;
+  height: 54px;
+  padding: 0 20px;
+  font: inherit;
+  font-size: 15.5px;
+  font-weight: 650;
+  letter-spacing: 0.01em;
+  color: #fff;
+  border: none;
+  border-radius: 15px;
+  cursor: pointer;
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 52%, #a855f7 100%);
+  box-shadow:
+    0 16px 34px -12px rgba(124, 92, 246, 0.85),
+    0 1px 0 rgba(255, 255, 255, 0.28) inset;
+  transition: box-shadow 0.25s, filter 0.25s;
+}
+
+.login-form button[type="submit"]:hover:not(:disabled) {
+  filter: brightness(1.07);
+  box-shadow:
+    0 22px 42px -12px rgba(124, 92, 246, 0.95),
+    0 1px 0 rgba(255, 255, 255, 0.3) inset;
+}
+
+/* light sweep across the button on hover */
+.login-form button[type="submit"]::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -60%;
+  width: 45%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+  transform: skewX(-18deg);
+  transition: left 0.6s ease;
+}
+
+.login-form button[type="submit"]:hover:not(:disabled)::after {
+  left: 120%;
+}
+
+.login-form button[type="submit"]:disabled {
+  cursor: default;
+}
+
+.login-form button[type="submit"].is-done {
+  background: linear-gradient(135deg, #10b981, #34d399);
+  box-shadow: 0 18px 36px -14px rgba(16, 185, 129, 0.85);
+}
+
+.btn-label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+}
+
+/* ---------------------------- footer ---------------------------- */
+
+.login-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 22px 0 16px;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(169, 180, 208, 0.75);
+}
+
+.login-divider::before,
+.login-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+}
+
+.signup-link {
+  margin: 0;
+  text-align: center;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.signup-link a {
+  position: relative;
+  font-weight: 600;
+  color: var(--text);
+  text-decoration: none;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.signup-link a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -3px;
+  height: 1.5px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.25s ease;
+}
+
+.signup-link a:hover::after {
+  transform: scaleX(1);
+}
+
+/* ---------------------------- responsive / a11y ---------------------------- */
+
+@media (max-width: 420px) {
   .login-form {
-    background: rgb(218, 238, 243);
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-    width: 300px;
+    padding: 32px 22px 26px;
+    border-radius: 22px;
   }
-  
+
   .login-form h2 {
-    margin-bottom: 20px;
-    text-align: center;
+    font-size: 24px;
   }
-  
-  .login-form input {
-    margin-bottom: 15px;
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .login-container::before,
+  .login-container::after {
+    animation: none;
   }
-  
-  .login-form button {
-    padding: 10px;
-    background: #007bff;
-    color: white;
-    font-size: 16px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
+
+  .login-form button[type="submit"]::after {
+    transition: none;
   }
-  
-  .login-form button:hover {
-    background: #0056b3;
-  }
-  
+}
