@@ -8,6 +8,12 @@
   text-align: center;
 }
 
+.book-search-container .error {
+  color: #c82333;
+  font-size: 14px;
+  font-weight: 500;
+}
+
 .search-bar {
   display: flex;
   justify-content: center;

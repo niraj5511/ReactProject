@@ -3,6 +3,16 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./BookSearch.css"; // Ensure this file exists in the styles folder
 
+// via.placeholder.com no longer resolves, so keep the fallback local
+const BOOK_PLACEHOLDER =
+  "data:image/svg+xml;utf8," +
+  encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" width="100" height="150">' +
+      '<rect width="100" height="150" rx="5" fill="#e9ecef"/>' +
+      '<text x="50" y="79" font-family="sans-serif" font-size="11" fill="#8a94a0" text-anchor="middle">No cover</text>' +
+      "</svg>"
+  );
+
 const BookSearch = () => {
   const [query, setQuery] = useState(""); // Stores user input
   const [books, setBooks] = useState([]); // Stores search results
@@ -13,9 +23,14 @@ const BookSearch = () => {
 
   // Load search history from localStorage when the component mounts
   useEffect(() => {
+    // Don't let this page be reached by typing the URL without logging in
+    if (!localStorage.getItem("currentUser")) {
+      navigate("/", { replace: true });
+      return;
+    }
     const storedHistory = JSON.parse(localStorage.getItem("searchHistory")) || [];
     setSearchHistory(storedHistory);
-  }, []);
+  }, [navigate]);
 
   const handleSearch = async () => {
     if (!query.trim()) {
@@ -28,7 +43,9 @@ const BookSearch = () => {
 
     try {
       const response = await axios.get(
-        `https://www.googleapis.com/books/v1/volumes?q=${query}&maxResults=10`
+        `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(
+          query
+        )}&maxResults=10`
       );
       setBooks(response.data.items || []);
 
@@ -36,8 +53,14 @@ const BookSearch = () => {
       const updatedHistory = [query, ...searchHistory.filter((item) => item !== query)].slice(0, 5);
       setSearchHistory(updatedHistory);
       localStorage.setItem("searchHistory", JSON.stringify(updatedHistory)); // Save to localStorage
-    } catch (error) {
-      setError("Failed to fetch books. Try again later.");
+    } catch (err) {
+      setBooks([]);
+      const status = err.response?.status;
+      setError(
+        status === 429
+          ? "Google Books is rate limiting requests right now. Try again later."
+          : `Failed to fetch books.${status ? ` (error ${status})` : ""} Try again later.`
+      );
     }
 
     setLoading(false);
@@ -49,8 +72,13 @@ const BookSearch = () => {
   };
 
   const handleBookClick = (book) => {
-    // Navigate to detailed book page
-    navigate(`/book/${book.id}`);
+    // No /book/:id route exists, so send them to the Google Books info page
+    const infoLink = book.volumeInfo.infoLink;
+    if (infoLink) {
+      window.open(infoLink, "_blank", "noopener");
+    } else {
+      setError("Details are not available for this book.");
+    }
   };
 
   const handleReadBook = (book) => {
@@ -72,6 +100,7 @@ const BookSearch = () => {
           placeholder="Enter book title or author..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && handleSearch()}
         />
         <button onClick={handleSearch} disabled={loading}>
           {loading ? "Searching..." : "Search"}
@@ -103,8 +132,10 @@ const BookSearch = () => {
             <div key={book.id} className="book-card">
               <img
                 src={
-                  book.volumeInfo.imageLinks?.thumbnail ||
-                  "https://via.placeholder.com/150"
+                  book.volumeInfo.imageLinks?.thumbnail?.replace(
+                    "http://",
+                    "https://"
+                  ) || BOOK_PLACEHOLDER
                 }
                 alt={book.volumeInfo.title}
               />

@@ -1,7 +1,6 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
 import App from "./App";
 import LoginForm from "./Login";
 import SignUpForm from "./SignupForm";
