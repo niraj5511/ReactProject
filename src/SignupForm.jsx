@@ -157,15 +157,6 @@ const SignupForm = () => {
       isValid = false;
     }
 
-    // // Validate age
-    // if (!formData.age) {
-    //   newErrors.age = "Age is required.";
-    //   isValid = false;
-    // } else if (parseInt(formData.age, 10) <= 18) {
-    //   newErrors.age = "You must be over 18 years old.";
-    //   isValid = false;
-    // }
-
     // Validate gender
     if (!formData.gender) {
       newErrors.gender = "Please select your gender.";
